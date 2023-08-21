@@ -1,0 +1,9 @@
+pip
+wheel
+watchdog
+tox
+coverage
+Sphinx
+twine
+pytest
+black
