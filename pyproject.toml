@@ -6,7 +6,7 @@ license = {file = "LICENSE"}
 classifiers = ["License :: OSI Approved :: GNU General Public License v3 (GPLv3)"]
 dynamic = ["version", "description"]
 requires-python = ">=3.10"
-dependencies = []
+dependencies = ["astropy"]
 
 [project.urls]
 homepage = ""
