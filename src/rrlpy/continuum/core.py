@@ -32,7 +32,7 @@ def continuum_brightness(te, tbg0, tm, tf, tau_c):
     )
 
 
-def kappa(nu, te, ne, ni, z, gaunt_fun=gaunt_ff_oster):
+def kappa(nu, te, ne, ni, z=1.0, gaunt_fun=gaunt_ff_oster):
     """ """
 
     gff = gaunt_fun(nu, te, z)
@@ -44,7 +44,7 @@ def kappa(nu, te, ne, ni, z, gaunt_fun=gaunt_ff_oster):
     return kc
 
 
-def tau(nu, te, ne, ni, z, pl, gaunt_fun=gaunt_ff_oster):
+def tau(nu, te, ne, ni, pl, z=1.0, gaunt_fun=gaunt_ff_oster):
     """
     Free-free continuum optical depth.
 
@@ -70,4 +70,4 @@ def tau(nu, te, ne, ni, z, pl, gaunt_fun=gaunt_ff_oster):
     -------
     """
 
-    return kappa(nu, te, ne, ni, z, gaunt_fun=gaunt_fun) * pl
+    return kappa(nu, te, ne, ni, z=z, gaunt_fun=gaunt_fun) * pl
