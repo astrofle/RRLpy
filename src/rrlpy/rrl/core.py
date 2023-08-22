@@ -63,6 +63,22 @@ def mdn(dn):
 
 
 def xi(n, te, z):
-    """ """
+    """
+    Argument of the exponential factor in the Saha-Boltzmann equation.
+
+    Parameters
+    ----------
+    n : int
+        Principal quantum number.
+    te : float
+        Electron temperature in K.
+    z : float
+        Net charge of the ion.
+
+    Returns
+    -------
+    xi : float
+        :math:`z^2 Ry / (n^2 k_{B} te)`
+    """
 
     return z**2.0 * Ry / (n**2.0 * k_B * te)
