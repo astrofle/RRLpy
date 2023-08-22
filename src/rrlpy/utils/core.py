@@ -53,3 +53,32 @@ def gauss_area(amplitude, sigma):
     """
 
     return amplitude * sigma * np.sqrt(2.0 * np.pi)
+
+
+def gauss_area_err(amplitude, amplitude_err, sigma, sigma_err):
+    """
+    Returns the error on the area of a Gaussian of a given `amplitude` and `sigma` \
+    with their corresponding errors. It assumes no correlation between `amplitude` and
+    `sigma`.
+
+    Parameters
+    ----------
+    amplitude : float
+        Amplitude of the Gaussian.
+    amplitude_err : float
+        Error on the amplitude.
+    sigma : float
+        Standard deviation of the Gaussian.
+    sigma_err : float
+        Error on sigma.
+
+    Returns
+    -------
+    area_err : float
+        The error on the area.
+    """
+
+    err1 = np.power(amplitude_err * sigma * np.sqrt(2 * np.pi), 2)
+    err2 = np.power(sigma_err * amplitude * np.sqrt(2 * np.pi), 2)
+
+    return np.sqrt(err1 + err2)
