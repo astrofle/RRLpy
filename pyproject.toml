@@ -19,8 +19,8 @@ description = "Radio Recombination Lines in Python"
 version = { source = "file", path = "src/rrlpy/__version__.py" }
 
 [project.urls]
-homepage = ""
-repository = ""
+homepage = "https://github.com/astrofle/RRLpy"
+repository = "https://github.com/astrofle/RRLpy"
 
 #[project.scripts]
 #rrlpy = "rrlpy.cli:main"
