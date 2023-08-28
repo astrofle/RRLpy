@@ -1,12 +1,19 @@
 [project]
 name = "rrlpy"
-authors = [{name = "Pedro Salas", email = "psalas@nrao.edu"}]
+authors = [
+    {name = "Pedro Salas", email = "psalas@nrao.edu"},
+    {name = "astrofle", email = "psalas@nrao.edu"},
+]
 readme = "README.md"
-license = {file = "LICENSE"}
+license = {file = "LICENSE",text = "MIT"}
 classifiers = ["License :: OSI Approved :: GNU General Public License v3 (GPLv3)"]
 dynamic = ["version", "description"]
-requires-python = ">=3.10"
-dependencies = ["astropy"]
+requires-python = ">=3.8"
+dependencies = [
+    "astropy",
+]
+version = "0.1.0"
+description = "Radio Recombination Lines in Python"
 
 
 [tool.pdm]
@@ -16,8 +23,8 @@ version = { source = "file", path = "src/rrlpy/__version__.py" }
 homepage = ""
 repository = ""
 
-[project.scripts]
-rrlpy = "rrlpy.cli:main"
+#[project.scripts]
+#rrlpy = "rrlpy.cli:main"
 
 [tool]
 
@@ -53,3 +60,35 @@ testpaths = ["tests"]
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
+
+[tool.pyprojectx]
+pdm = "pdm==2.8.2"
+
+# commonly used tools
+#black = "black"
+#isort = "isort"
+#pylint = "pylint"
+#pre-commit = "pre-commit"
+#jupyter = ["jupyter", "."]
+
+[tool.pyprojectx.aliases]
+install = "pdm install"
+run = "pdm run"
+outdated = "pdm update --outdated"
+test = "pdm run pytest"
+
+# example aliases
+#clean = "rm -rf .venv .pytest_cache dist"
+#clean-all = "pw@ clean && rm -rf .pyprojectx"
+#black = "black src tests"
+#isort = "isort src tests"
+#check-pylint = "pylint src tests"
+#check-black = "black src tests --check"
+#check = "pw@ check-black && pw@ check-pylint && pw@ test"
+#build = "pw@ install && pw@ check && pw@ pdm build"
+#notebook = "jupyter notebook -y"
+
+[tool.pyprojectx.os.win.aliases]
+# example os specific aliases
+#clean = "rmdir /s/q .venv .pytest_cache dist"
+#clean-all = "pw@ clean & rmdir /s/q .pyprojectx"
