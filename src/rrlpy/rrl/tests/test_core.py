@@ -1,3 +1,5 @@
+import pytest
+
 from astropy import units as u
 
 from rrlpy.rrl import core
@@ -15,4 +17,4 @@ class TestRRLCore:
         assert core.fnnp_app(500, 1) == 95.6862
 
     def test_xi(self):
-        assert core.xi(1, 1.0 * u.K, 1.0).value == 157887.51240204
+        assert core.xi(1, 1.0 * u.K, 1.0).value == pytest.approx(157887.51240204, 1e-8)
