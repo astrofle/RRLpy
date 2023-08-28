@@ -7,7 +7,7 @@ authors = [
 readme = "README.md"
 license = {file = "LICENSE",text = "MIT"}
 classifiers = ["License :: OSI Approved :: GNU General Public License v3 (GPLv3)"]
-dynamic = ["version", "description"]
+dynamic = ["version"]
 requires-python = ">=3.8"
 dependencies = [
     "astropy",
