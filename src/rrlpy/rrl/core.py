@@ -7,6 +7,33 @@ import numpy as np
 from rrlpy.rrl.constants import Ry, k_B, h, m_e, e, c
 
 
+def beta(bn, bm, nu, te):
+    """
+    Correction factor for stimulated emission/absorption.
+    Eq. (31) Salgado et al. (2017b)
+
+    Parameters
+    ----------
+    bn : float
+        Departure coefficient for the lower level.
+    bm : float
+        Departure coefficient for the upper level.
+    nu : float
+        Frequency of the transition between levels m and n.
+    te : float
+        Electron temperature.
+
+    Returns
+    -------
+    beta : float
+        Correction factor for the transition between levels m and n.
+    """
+
+    exparg = -h * nu / (k_B * te)
+    exp = np.exp(exparg)
+    return (1.0 - bm / bn * exp) / (1.0 - exp)
+
+
 def fnnp_app(n, dn):
     """
     Eq. (1) Menzel (1969)
