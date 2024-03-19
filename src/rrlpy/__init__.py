@@ -1,11 +1,11 @@
 """ Top-level package for rrlpy."""
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 all = ["version"]
 
 
 def version():
-    """Version of the dysh code
+    """Version of the code
 
     Returns
     -------
