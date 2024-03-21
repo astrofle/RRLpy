@@ -30,7 +30,7 @@ repository = "https://github.com/astrofle/RRLpy"
 
 [tool.black]
 preview = true
-line-length = 100
+line-length = 120
 
 [tool.ruff]
 select = [
@@ -39,8 +39,6 @@ select = [
   "W",    # https://beta.ruff.rs/docs/rules/#warning-w
   "B",    # https://beta.ruff.rs/docs/rules/#flake8-bugbear-b
   "I",    # https://beta.ruff.rs/docs/rules/#isort-i
-  "NPY",  # https://beta.ruff.rs/docs/rules/#numpy-specific-rules-npy
-  "PD",   # https://beta.ruff.rs/docs/rules/#pandas-vet-pd
   "RUF",  # https://beta.ruff.rs/docs/rules/#ruff-specific-rules-ruf
 ]
 fixable = ["ALL"]
