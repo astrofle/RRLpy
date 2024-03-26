@@ -1,4 +1,5 @@
 import os
+
 import numpy as np
 
 
@@ -55,9 +56,7 @@ def find_lines_sb(freq, line, z=0, verbose=False):
         if nlin > 1:
             print("Corresponding to n values: {0}--{1}".format(refqns[0], refqns[-1]))
         elif nlin == 1:
-            print(
-                "Corresponding to n value {0} and frequency {1} MHz".format(refqns[0], reffreqs[0])
-            )
+            print("Corresponding to n value {0} and frequency {1} MHz".format(refqns[0], reffreqs[0]))
 
     return refqns, reffreqs
 
@@ -101,3 +100,32 @@ def load_ref(line):
     reffreq = refspec[:, 1]
 
     return qn, reffreq
+
+
+def frequency(nu, nl, z=1, m=1.007825035):
+    """
+    Frequency of the transition from `nu` to `nl`
+    for an atom of mass `m` and net charge of `z`.
+
+    Parameters
+    ----------
+    nu : int
+        Upper level principal quantum number.
+    nl : int
+        Lower level principal quantum number.
+    z : int
+        Net charge of the atom or ion.
+    m : float
+        Mass of the neutral atom in atomic mass units.
+
+    Returns
+    -------
+    frequency : float
+        Frequency of the transition in Hz.
+    """
+
+    cte = 3.28984196e15 * z**2.0
+    me = 5.48579911e-4
+    mef = (m - me * (z + 1.0)) / (m - me * z)
+
+    return cte * mef * (np.power(nl, -2.0) - np.power(nu, -2.0))
