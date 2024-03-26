@@ -129,3 +129,47 @@ def frequency(nu, nl, z=1, m=1.007825035):
     mef = (m - me * (z + 1.0)) / (m - me * z)
 
     return cte * mef * (np.power(nl, -2.0) - np.power(nu, -2.0))
+
+
+def transition2dn(transition):
+    """
+    Returns the number of quantum numbers for a given `transition`.
+
+    Parameters
+    ----------
+    transition : str
+        Transition name.
+
+    Returns
+    -------
+    dn : int
+        Difference between the upper and lower quantum numbers.
+
+
+    Examples
+    --------
+
+    >>> transition2dn('alpha')
+    1
+    >>> transition2dn('DeltA')
+    4
+    """
+
+    trans = transition.lower()
+
+    if trans == "alpha":
+        dn = 1
+    elif trans == "beta":
+        dn = 2
+    elif trans == "gamma":
+        dn = 3
+    elif trans == "delta":
+        dn = 4
+    elif trans == "epsilon":
+        dn = 5
+    elif trans == "zeta":
+        dn = 6
+    elif trans == "eta":
+        dn = 7
+
+    return dn
