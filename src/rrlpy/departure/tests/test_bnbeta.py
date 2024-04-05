@@ -37,4 +37,4 @@ class TestBnBeta:
         tr = None
         self.bnbeta.select(ne, te, tr)
         assert self.bnbeta.mask.sum() == 1
-        assert self.bnbeta.mask[1] is True
+        assert self.bnbeta.mask[1]
