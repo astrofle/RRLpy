@@ -6,7 +6,7 @@ import numpy as np
 
 from rrlpy import freq
 
-from . import constants
+from . import constants, core
 
 
 class RRLs:
@@ -26,6 +26,9 @@ class RRLs:
 
         if self.frequency is None:
             self._qn2freq()
+
+        self.fnnp = np.array([core.fnnp_app(qn, dn) for qn, dn in zip(self.qn, self.dn)])
+        self.mass = np.array([constants.mass[e] for e in self.element])
 
     def _qn2freq(self):
         self.frequency = np.array(
