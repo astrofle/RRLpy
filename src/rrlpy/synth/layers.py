@@ -14,11 +14,12 @@ class Layers:
         self.ne_vals = ne
         self.te_vals = te
         self.ds_vals = l
-        self.v_rms_vals = v_rms
+        self.vrms_vals = v_rms
         self.bnbeta = departure_coefs
         self.rrls = rrls
         self.background = background
         self.medium = medium
+        self._freq = self.rrls.get_freq()
 
         # Infer.
         self.n_layers = len(ne)
@@ -37,18 +38,17 @@ class Layers:
             ne = self.ne_vals[i]
             te = self.te_vals[i]
             ds = self.ds_vals[i]
-            dv = self.v_rms_vals[i]
+            dv = self.vrms_vals[i]
 
             bnl = self.bnbeta.get_bn(ne, te, self.background.get_tr100())
             bml = self.bnbeta.get_bm(ne, te, self.background.get_tr100())
             betal = self.bnbeta.get_beta(ne, te, self.background.get_tr100())
 
             # Compute continuum optical depth for the layer.
-            self.tau_c[i] = continuum.tau(self.rrls.get_freq(), te, ne, ne, ds, z=self.rrls.get_z()).cgs
+            self.tau_c[i] = continuum.tau(self._freq, te, ne, ne, ds, z=self.rrls.get_z()).cgs
 
             # Compute line width for layer.
-            dv = self.v_rms_vals[i]
-            dnu = dv / ac.c * self.rrls.get_freq()
+            dnu = dv / ac.c * self._freq
             phi = 1.0 / (1.064 * dnu)
             # RRL optical depth.
             self.tau_l[i] = (
@@ -59,7 +59,7 @@ class Layers:
                     ne,
                     ds,
                     self.rrls.fnnp,
-                    self.rrls.get_freq(),
+                    self._freq,
                     dn=self.rrls.dn,
                     z=self.rrls.get_z(),
                 )
@@ -68,11 +68,11 @@ class Layers:
 
             # First layer.
             if i == 0:
-                tmi = self.medium.tm
-                t0ci = self.background.t0
-                t0li = self.background.t0
+                tmi = self.medium.eval(self._freq)
+                t0ci = self.background.eval(self._freq)
+                t0li = self.background.eval(self._freq)
             else:
-                tmi = self.medium.tm
+                tmi = self.medium.eval(self._freq)
                 t0ci = self.t_cont[i - 1]
                 t0li = self.t_tot[i - 1]
 

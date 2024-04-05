@@ -8,5 +8,5 @@ class TestLayers:
         self.l = [1] * u.pc
         self.v_rms = [1] * u.km / u.s
 
-    def test_layers():
+    def test_layers(self):
         pass
