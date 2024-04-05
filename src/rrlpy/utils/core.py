@@ -82,3 +82,25 @@ def gauss_area_err(amplitude, amplitude_err, sigma, sigma_err):
     err2 = np.power(sigma_err * amplitude * np.sqrt(2 * np.pi), 2)
 
     return np.sqrt(err1 + err2)
+
+
+def sigma2fwhm(sigma):
+    """
+    Converts the :math:`\\sigma` parameter of a Gaussian distribution to its FWHM.
+
+    .. math:
+
+       FWHM=2\\sqrt{2\\ln2}\\sigma
+
+    Parameters
+    ----------
+    sigma : float
+        Standard deviation of a Gaussian.
+
+    Returns
+    -------
+    fwhm : float
+        Full Width at Half Maximum of the Gaussian.
+    """
+
+    return sigma * 2.0 * np.sqrt(2.0 * np.log(2.0))
