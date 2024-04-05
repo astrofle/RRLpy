@@ -1,4 +1,5 @@
-from . import continuum
+from . import continuum, core
 from .continuum import *
+from .core import *
 
-__all__ = ["continuum"]
+__all__ = ["core", "continuum"]
