@@ -11,6 +11,8 @@ dynamic = ["version"]
 requires-python = ">=3.5"
 dependencies = [
     "astropy",
+    "scipy",
+    "numpy"
 ]
 description = "Radio Recombination Lines in Python"
 
