@@ -6,7 +6,7 @@ import numpy as np
 from astropy import constants as ac
 from astropy import units as u
 
-from rrlpy import continuum, rrls
+from rrlpy import continuum, rrl
 
 
 class Layers:
@@ -52,7 +52,7 @@ class Layers:
             phi = 1.0 / (1.064 * dnu)
             # RRL optical depth.
             self.tau_l[i] = (
-                rrls.tau_exact(
+                rrl.tau_exact(
                     self.rrls.qns,
                     ne,
                     te,
@@ -77,7 +77,7 @@ class Layers:
                 t0li = self.t_tot[i - 1]
 
             # Line emission.
-            self.t_tot[i] = rrls.layer_emission(
+            self.t_tot[i] = rrl.layer_emission(
                 self.tau_l[i], self.tau_c[i], bnl, bml, betal, te, t0=t0li, tm=tmi, tf=0 * u.K
             )
             # Continuum emission.
