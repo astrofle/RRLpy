@@ -4,24 +4,25 @@ Line width functions.
 
 
 import numpy as np
-from scipy import interpolate
-from rrlpy.utils import sigma2fwhm, fwhm2sigma
 from astropy.constants import k_B
+from scipy import interpolate
+
+from rrlpy.utils import fwhm2sigma, sigma2fwhm
 
 
 def doppler_broad(t, m, vrms, fwhm=False):
     """
     Doppler broadening.
 
-    :math:`\\frac{\Delta v}{\mbox{m s}^{-1}}=(\\frac{2k_{B}T}{m}+v_{\mathrm{rms}}^2)^{1/2}`
+    :math:`\\frac{\\Delta v}{\\mbox{m s}^{-1}}=(\\frac{2k_{B}T}{m}+v_{\\mathrm{rms}}^2)^{1/2}`
 
     :param t: Gas temperature in K.
     :type t: float
     :param m: Mass of the element producing the line in amu.
     :type m: float
-    :param vrms: Turbulent velocity in :math:`\mbox{m s}^{-1}`.
+    :param vrms: Turbulent velocity in :math:`\\mbox{m s}^{-1}`.
     :type vrms: float
-    :returns: The sigma or FWHM of a Gaussian line due to Doppler broadening in :math:`\mbox{m s}^{-1}`.
+    :returns: The sigma or FWHM of a Gaussian line due to Doppler broadening in :math:`\\mbox{m s}^{-1}`.
     :rtype: float
     """
 
@@ -37,11 +38,11 @@ def doppler_temp(sigma, m, vrms, fwhm=False):
     """
     The temperature required to produce a Gaussian line of width sigma.
 
-    :param sigma: The sigma or FWHM of a Gaussian line due to Doppler broadening in :math:`\mbox{m s}^{-1}`.
+    :param sigma: The sigma or FWHM of a Gaussian line due to Doppler broadening in :math:`\\mbox{m s}^{-1}`.
     :type sigma: float
     :param m: Mass of the element producing the line in amu.
     :type m: float
-    :param vrms: Turbulent velocity in :math:`\mbox{m s}^{-1}`.
+    :param vrms: Turbulent velocity in :math:`\\mbox{m s}^{-1}`.
     :type vrms: float
     :returns: Gas temperature in K.
     :rtype: float
@@ -67,9 +68,9 @@ def doppler_temp_err(sigma, sigma_err, m, vrms, vrms_err, fwhm=False):
     m : float
         Mass of the element producing the line in amu.
     vrms : float
-        Turbulent velocity in :math:`\mbox{m s}^{-1}`.
+        Turbulent velocity in :math:`\\mbox{m s}^{-1}`.
     vrms_err : float
-        Error on the turbulent velocity in :math:`\mbox{m s}^{-1}`.
+        Error on the turbulent velocity in :math:`\\mbox{m s}^{-1}`.
     fwhm : bool
         False if the Doppler width is the standard deviation of a
         Gaussian. True if the Doppler width is the FWHM.
@@ -105,13 +106,7 @@ def pressure_broad(n, te, ne):
     """
 
     if te <= 1000:
-        dnup = (
-            2e-5
-            * np.power(te, -3.0 / 2.0)
-            * np.exp(-26.0 / np.power(te, 1.0 / 3.0))
-            * ne
-            * np.power(n, 5.2)
-        )
+        dnup = 2e-5 * np.power(te, -3.0 / 2.0) * np.exp(-26.0 / np.power(te, 1.0 / 3.0)) * ne * np.power(n, 5.2)
     else:
         dnup = 3.74e-8 * ne * np.power(n, 4.4) * np.power(te, -0.1)
 
@@ -288,10 +283,29 @@ def radiation_broad_salgado_general(n, w, tr, nu0, alpha):
     cte = 2.0 / np.pi * 2.14e4 * np.power(6.578e15 / nu0, alpha + 1.0) * k_B.cgs.value * nu0
     dnexp = alpha - 2.0
 
-    return (
-        w
-        * cte
-        * tr
-        * np.power(n, -3.0 * alpha - 2.0)
-        * (1.0 + np.power(2.0, dnexp) + np.power(3.0, dnexp))
-    )
+    return w * cte * tr * np.power(n, -3.0 * alpha - 2.0) * (1.0 + np.power(2.0, dnexp) + np.power(3.0, dnexp))
+
+
+def voigt_fwhm(dD, dL):
+    """
+    Computes the FWHM of a Voigt profile. \
+    http://en.wikipedia.org/wiki/Voigt_profile#The_width_of_the_Voigt_profile
+
+    .. math::
+
+        FWHM_{\\rm{V}}=0.5346dL+\\sqrt{0.2166dL^{2}+dD^{2}}
+
+    Parameters
+    ----------
+    dD : float
+        FWHM of the Gaussian core.
+    dL: float
+        FWHM of the Lorentz wings.
+
+    Returns
+    -------
+    fwhm : float
+         The FWHM of a Voigt profile.
+    """
+
+    return np.multiply(0.5346, dL) + np.sqrt(np.multiply(0.2166, np.power(dL, 2)) + np.power(dD, 2))
