@@ -3,8 +3,9 @@ Core functions for a generic radio recombination line.
 """
 
 import numpy as np
+from scipy.special import wofz
 
-from rrlpy.rrl.constants import Ry, k_B, h, m_e, e, c
+from rrlpy.rrl.constants import Ry, c, e, h, k_B, m_e
 
 
 def beta(bn, bm, nu, te):
@@ -96,9 +97,7 @@ def tau_constant():
     Constants that go into the RRL optical depth.
     """
 
-    return (
-        h**3 * e**2.0 * np.pi / (np.power(2.0 * np.pi * m_e * k_B, 3.0 / 2.0) * m_e * c)
-    ).cgs
+    return (h**3 * e**2.0 * np.pi / (np.power(2.0 * np.pi * m_e * k_B, 3.0 / 2.0) * m_e * c)).cgs
 
 
 def tau_exact(n, ne, te, ni, pl, fnnp, nu, dn, z):
@@ -141,6 +140,51 @@ def tau_exact(n, ne, te, ni, pl, fnnp, nu, dn, z):
         * np.exp(xi_)
         * (1.0 - np.exp(-h * nu / (k_B * te)))
     )
+
+
+def _voigt(x, y):
+    # The Voigt function is also the real part of
+    # w(z) = exp(-z^2) erfc(iz), the complex probability function,
+    # which is also known as the Faddeeva function. Scipy has
+    # implemented this function under the name wofz()
+
+    z = x + 1j * y
+    I = wofz(z).real
+
+    return I
+
+
+def voigt(x, sigma, gamma, center, amplitude):
+    """
+    The Voigt line shape in terms of its physical parameters.
+
+    Parameters
+    ----------
+    x : float
+        Independent variable.
+    sigma : float
+        HWHM of the Gaussian.
+    gamma : float
+        HWHM of the Lorentzian.
+    center : float
+        Line center.
+    amplitude : float
+        Line area.
+
+    Returns
+    -------
+    voigt : float
+        Voigt profile.
+    """
+
+    ln2 = np.log(2)
+    f = np.sqrt(ln2)
+    rx = (x - center) / sigma * f
+    ry = gamma / sigma * f
+
+    v = amplitude * f / (sigma * np.sqrt(np.pi)) * _voigt(rx, ry)
+
+    return v
 
 
 def xi(n, te, z):
