@@ -10,7 +10,9 @@ from rrlpy import continuum, linewidth, rrl
 
 
 class Layer:
-    def __init__(self, ne, te, l, v_rms, departure_coefs, rrls, background, medium, x_axis=None):
+    def __init__(
+        self, ne, te, l, v_rms, departure_coefs, rrls, background, medium, x_axis=None, velocity=0 * u.km / u.s
+    ):
         self.ne = ne
         self.te = te
         self.ds = l
@@ -21,6 +23,7 @@ class Layer:
         self.medium = medium
         self._freq = self.rrls.frequency * u.Hz
         self.x = x_axis
+        self.velocity = velocity
 
         if self.x is None:
             self.nx = 1
@@ -69,24 +72,32 @@ class Layer:
         self.tau_c = continuum.tau(self.x_nu, te, ne, ne, ds, z=z).cgs
 
         # Compute line width for layer.
+        # Gaussian line width.
         dv_gauss_v = (
             linewidth.doppler_broad(te.to("K").value, self.rrls.mass, dv.to("m/s").value, fwhm=True) * u.m / u.s
         )
         dv_gauss = dv_gauss_v / ac.c * self._freq
+        # Pressure term.
         dv_press = (
             linewidth.pressure_broad_salgado(self.rrls.qn, te.to("K").value, ne.to("cm-3").value, self.rrls.dn) * u.Hz
         )
         dv_press_v = dv_press / self._freq * ac.c  # Velocity units.
+        # Radiation term.
         dv_radi = linewidth.radiation_broad_salgado(self.rrls.qn, 1.0, self.background.get_tr100().to("K").value) * u.Hz
         dv_radi_v = dv_radi / self._freq * ac.c  # Velocity units.
+        # Lorentzian line width.
         dv_lrntz_v = dv_press_v + dv_radi_v
         dv_lrntz = dv_press + dv_radi
+        # Voigt line width.
         self.dv = linewidth.voigt_fwhm(dv_gauss_v, dv_lrntz_v)
-        # Convert the linewidth to frequency.
-        self.dv[:, np.newaxis] / ac.c * self.x_nu
+
+        # Layer velocity to frequency.
+        rel = u.doppler_relativistic(self._freq)
+        v_nu = self.velocity.to(u.Hz, equivalencies=rel)
+
         # Line profile.
         phi = rrl.voigt(
-            self.x_nu, dv_gauss[:, np.newaxis] / 2.0, dv_lrntz[:, np.newaxis] / 2.0, self._freq[:, np.newaxis], 1.0
+            self.x_nu, dv_gauss[:, np.newaxis] / 2.0, dv_lrntz[:, np.newaxis] / 2.0, v_nu[:, np.newaxis], 1.0
         )
         self._phi = phi
 
@@ -110,7 +121,7 @@ class Layer:
         t0ci = self.background.eval(self.x_nu)
         t0li = self.background.eval(self.x_nu)
 
-        # Line emission.
+        # Total emission from layer.
         self.tt_x = layer_emission(
             self.tau_l,
             self.tau_c,
@@ -122,8 +133,9 @@ class Layer:
             tm=tmi,
             tf=0 * u.K,
         )
-        # Continuum emission.
+        # Continuum emission from layer.
         self.tc_x = continuum.continuum_brightness(te, t0ci, tmi, 0 * u.K, self.tau_c)
+        # Line only emission from layer, total minus continuum.
         self.tl_x = self.tt_x - self.tc_x
 
 
