@@ -136,15 +136,20 @@ def pressure_broad_salgado(n, te, ne, dn=1):
     return ne * np.power(10.0, a) * (np.power(n, g) + np.power(n + dn, g)) / 2.0 / np.pi
 
 
-def pressure_broad_coefs(Te):
+def pressure_broad_coefs(t):
     """
     Defines the values of the constants :math:`a` and :math:`\\gamma` that go into the collisional broadening formula
     of Salgado et al. (2017).
 
-    :param Te: Electron temperature.
-    :type Te: float
-    :returns: The values of :math:`a` and :math:`\\gamma`.
-    :rtype: list
+    Parameters
+    ----------
+    t : float
+        Electron temperature.
+
+    Returns
+    -------
+    coefs : list
+        The values of :math:`a` and :math:`\\gamma`.
     """
 
     te = [
@@ -246,11 +251,11 @@ def pressure_broad_coefs(Te):
         4.2814240,
     ]
 
-    a_func = interpolate.interp1d(te, a, kind="linear", bounds_error=True, fill_value=0.0)
+    a_func = interpolate.interp1d(te, a, kind="linear", bounds_error=False, fill_value="extrapolate")
 
-    g_func = interpolate.interp1d(te, gammac, kind="linear", bounds_error=True, fill_value=0.0)
+    g_func = interpolate.interp1d(te, gammac, kind="linear", bounds_error=False, fill_value="extrapolate")
 
-    return [a_func(Te), g_func(Te)]
+    return [a_func(t), g_func(t)]
 
 
 def radiation_broad(n, W, tr):
