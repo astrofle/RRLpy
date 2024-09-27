@@ -2,6 +2,37 @@
 
 
 import numpy as np
+from scipy.interpolate import interp1d
+
+
+def best_match_indx(value, array):
+    """
+    Searchs for the index of the closest entry to value inside an array.
+
+    Parameters
+    ----------
+    value : Float
+        Value to find inside the array.
+    array : array
+        List to search for the given value.
+
+    Returns
+    -------
+    index : int
+        Best match index for the value inside array.
+
+    Examples
+    --------
+
+    >>> a = [1,2,3,4]
+    >>> best_match_indx(3, a)
+    2
+
+    """
+
+    array = np.array(array)
+
+    return np.argmin(abs(array - value))
 
 
 def fwhm2sigma(fwhm):
@@ -82,6 +113,43 @@ def gauss_area_err(amplitude, amplitude_err, sigma, sigma_err):
     err2 = np.power(sigma_err * amplitude * np.sqrt(2 * np.pi), 2)
 
     return np.sqrt(err1 + err2)
+
+
+def interpolate(x, y, xnew):
+    """
+    Interpolate data (`x`,`y`) into `xnew`.
+
+    Parameters
+    ----------
+    x : array
+    y : array
+
+    Returns
+    -------
+    """
+
+    mask = ~np.isfinite(y)
+
+    ynew = np.empty_like(y)
+
+    # Mask non-finite values.
+    np.ma.masked_where(mask, y)
+    mx = np.ma.masked_where(mask, x)
+    valid = np.ma.flatnotmasked_contiguous(mx)
+
+    # Interpolate non masked ranges indepently.
+    if not isinstance(valid, slice):
+        for rng in valid:
+            if len(x[rng]) > 1:
+                interp_y = interp1d(x[rng], y[rng], kind="linear", bounds_error=False, fill_value=0.0)
+                ynew += interp_y(xnew)
+            elif not np.isnan(x[rng]):
+                ynew[best_match_indx(x[rng], xnew)] += y[rng]
+    else:
+        interp_y = interp1d(x[valid], y[valid], kind="linear", bounds_error=False, fill_value=0.0)
+        ynew += interp_y(xnew)
+
+    return ynew
 
 
 def sigma2fwhm(sigma):
