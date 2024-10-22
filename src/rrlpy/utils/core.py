@@ -130,7 +130,7 @@ def interpolate(x, y, xnew):
 
     mask = ~np.isfinite(y)
 
-    ynew = np.empty_like(y)
+    ynew = np.zeros(len(xnew), dtype=y.dtype)
 
     # Mask non-finite values.
     np.ma.masked_where(mask, y)
@@ -148,6 +148,8 @@ def interpolate(x, y, xnew):
     else:
         interp_y = interp1d(x[valid], y[valid], kind="linear", bounds_error=False, fill_value=0.0)
         ynew += interp_y(xnew)
+
+    ynew[ynew == 0] = np.nan
 
     return ynew
 
