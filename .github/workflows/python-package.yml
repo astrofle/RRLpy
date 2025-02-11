@@ -6,8 +6,8 @@ name: Python package
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  pull_request: # Run on all pull requests
+  workflow_dispatch:
 
 jobs:
   build:
