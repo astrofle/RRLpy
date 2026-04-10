@@ -38,3 +38,44 @@ class TestBnBeta:
         self.bnbeta.select(ne, te, tr)
         assert self.bnbeta.mask.sum() == 1
         assert self.bnbeta.mask[1]
+
+    def test_interpolate(self):
+        ne = np.array([1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6])
+        te = np.array(
+            [
+                6000,
+                6000,
+                6000,
+                6000,
+                6000,
+                6000,
+                7000,
+                7000,
+                7000,
+                7000,
+                7000,
+                7000,
+                8000,
+                8000,
+                8000,
+                8000,
+                8000,
+                8000,
+                9000,
+                9000,
+                9000,
+                9000,
+                9000,
+                9000,
+            ]
+        )
+        bn = np.array([[0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5, 5]] * 4)
+        beta = np.array([[0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5, 5]] * 4)
+        n = np.array([100, 101])
+
+        bnb = bnbeta.BnBeta(n, bn, te, ne, None, beta=beta)
+
+        bnb_i = bnb.interpolate()
+
+        np.testing.assert_array_equal(bnb_i._n, n)
+        np.testing.assert_allclose(bnb_i.get_bn(1.5, 7000.0, None), [0.5, 0.5])

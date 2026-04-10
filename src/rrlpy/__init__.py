@@ -1,5 +1,5 @@
 """ Top-level package for rrlpy."""
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 
 all = ["version"]
 

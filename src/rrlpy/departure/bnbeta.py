@@ -2,7 +2,6 @@
 Departure coefficient class.
 """
 
-import warnings
 
 import numpy as np
 from scipy.interpolate import RectBivariateSpline
@@ -45,10 +44,9 @@ class BnBeta:
     def select(self, ne, te, tr=None):
         """ """
 
+        mask = (self.ne == ne) & (self.te == te)
         if tr is not None:
-            mask = (self.ne == ne) & (self.te == te) & (self.tr == tr)
-        else:
-            mask = (self.ne == ne) & (self.te == te)
+            mask = mask & (self.tr == tr)
 
         if mask.sum() == 0:
             raise ValueError("No departure coefficients for the specified physical conditions")
@@ -84,8 +82,7 @@ class BnBeta:
             if self.indices is not None:
                 idx = self.indices
             else:
-                warnings.warn("Will use all n values.")
-                idx = np.arange(len(self.n) - 1)
+                idx = np.arange(len(self.n), dtype=int)
         else:
             self.set_indices(n)
             idx = self.indices
@@ -138,20 +135,20 @@ class BnBetaInterp:
     def get_bn(self, ne, te, tr=None):
         bn_out = np.zeros(len(self._n), dtype="d")
         for i, n in enumerate(self._n):
-            bn_out[i] = self.bn[n](te, ne)
+            bn_out[i] = self.bn[n](te, ne, grid=False)
 
         return bn_out
 
     def get_bm(self, ne, te, tr=None):
         bm_out = np.zeros(len(self._n), dtype="d")
         for i, n in enumerate(self._n):
-            bm_out[i] = self.bn[n + 1](te, ne)
+            bm_out[i] = self.bn[n + 1](te, ne, grid=False)
 
         return bm_out
 
     def get_beta(self, ne, te, tr=None):
         beta_out = np.zeros(len(self._n), dtype="d")
         for i, n in enumerate(self._n):
-            beta_out[i] = self.beta[n](te, ne)
+            beta_out[i] = self.beta[n](te, ne, grid=False)
 
         return beta_out
