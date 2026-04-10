@@ -16,17 +16,16 @@ dependencies = [
 ]
 description = "Radio Recombination Lines in Python"
 
+[dependency-groups]
+dev = ["pytest",
+]
 
-[tool.pdm.version]
-source = "file"
+[tool.hatch.version]
 path = "src/rrlpy/__init__.py"
 
 [project.urls]
 homepage = "https://github.com/astrofle/RRLpy"
 repository = "https://github.com/astrofle/RRLpy"
-
-#[project.scripts]
-#rrlpy = "rrlpy.cli:main"
 
 [tool]
 
@@ -77,37 +76,5 @@ minversion = "6.0"
 testpaths = ["tests", "src"]
 
 [build-system]
-requires = ["pdm-backend"]
-build-backend = "pdm.backend"
-
-[tool.pyprojectx]
-pdm = "pdm==2.8.2"
-
-# commonly used tools
-#black = "black"
-#isort = "isort"
-#pylint = "pylint"
-#pre-commit = "pre-commit"
-#jupyter = ["jupyter", "."]
-
-[tool.pyprojectx.aliases]
-install = "pdm install"
-run = "pdm run"
-outdated = "pdm update --outdated"
-test = "pdm run pytest"
-
-# example aliases
-#clean = "rm -rf .venv .pytest_cache dist"
-#clean-all = "pw@ clean && rm -rf .pyprojectx"
-#black = "black src tests"
-#isort = "isort src tests"
-#check-pylint = "pylint src tests"
-#check-black = "black src tests --check"
-#check = "pw@ check-black && pw@ check-pylint && pw@ test"
-#build = "pw@ install && pw@ check && pw@ pdm build"
-#notebook = "jupyter notebook -y"
-
-[tool.pyprojectx.os.win.aliases]
-# example os specific aliases
-#clean = "rmdir /s/q .venv .pytest_cache dist"
-#clean-all = "pw@ clean & rmdir /s/q .pyprojectx"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
